@@ -132,10 +132,9 @@ object ReleaseStateTransformations {
 
     val append = Load.transformSettings(Load.projectScope(currentRef), currentRef.build, rootProject, settings)
 
-    // We don't want even want to be able to save the settings that are applied to the session during the release cycle.
+    // We don't even want to be able to save the settings that are applied to the session during the release cycle.
     // Just using an empty string works fine and in case the user calls `session save`, empty lines will be generated.
-    val EmptySettingString = ""
-		val newSession = session.appendSettings( append map (a => (a, EmptySettingString)))
+		val newSession = session.appendSettings( append map (a => (a, Nil)))
 		BuiltinCommands.reapply(newSession, structure, state)
   }
 }
@@ -193,10 +192,11 @@ object Utilities {
     val keys = Aggregation.aggregate(rkey, ScopeMask(), extracted.structure.extra)
     val tasks = Act.keyValues(extracted.structure)(keys)
     val toRun = tasks map { case KeyValue(k,t) => t.map(v => KeyValue(k,v)) } join;
+    val roots = tasks map { case KeyValue(k,_) => k }
 
 
     val (newS, result) = withStreams(extracted.structure, state){ str =>
-			val transform = nodeView(state, str, extra.tasks, extra.values)
+			val transform = nodeView(state, str, roots, extra.tasks, extra.values)
 			runTask(toRun, state,str, extracted.structure.index.triggers, config)(transform)
 		}
     (newS, result)

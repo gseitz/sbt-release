@@ -1,4 +1,7 @@
 # SBT-RELEASE
+
+## The canonical repository for `sbt-release` is now in the [SBT organization](https://github.com/sbt/sbt-release).
+
 This sbt plugin provides a customizable release process that you can add to your project.
 
 **Notice:** This README contains information for the latest snapshots. Please refer to the documents for a specific version by looking up the respective [tag](https://github.com/gseitz/sbt-release/tags).
